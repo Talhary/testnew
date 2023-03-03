@@ -9,7 +9,7 @@ const { indexOf } = require('lodash')
 const event = require('events')
 const gtts = require('better-node-gtts').default;
 const ttspush = new event()
-const img2= require('./imgv1')
+
 let unlink = util.promisify(fs.unlinkSync)
 const ttsv1 = require('./tts1.js')
 require('dotenv').config();
