@@ -11,7 +11,7 @@ const gtts = require('better-node-gtts').default;
 const ttspush = new event()
 
 let unlink = util.promisify(fs.unlinkSync)
-const ttsv1 = require('./tts1.js')
+const ttsv1 = require('./ttsv1.js')
 require('dotenv').config();
 let message = ''
 let users = []
