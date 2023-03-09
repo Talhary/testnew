@@ -18,7 +18,7 @@ let users = []
 let key = true
 
 const path = require('path')
-const img = require('./img')
+
 let senderJson = []
 let pathofsound1 = path.join(__dirname , 'files', 'output4.mp3') 
 let tts = require('./tts.js')
@@ -30,10 +30,10 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
    
     try {
 
-		if (m.text == 'stopbot') {
-            key = false
-            m.reply('bot is turned off')
-        }
+		// if (m.text == 'stopbot') {
+        //     key = false
+        //     m.reply('bot is turned off')
+        // }
         if( m.text == 'startbot'){
             key = true
            
@@ -91,9 +91,12 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
                 console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`), chalk.blueBright('IN'), chalk.green(groupName))
                 }
         }
+    if(budy == '/menu'){
+        m.reply(`send "startbot to turn on bot" <br> send "stopbot" to stop bot <br> send Clear to "delete" history`)
+    }
     
-       
- 
+          
+    
     if ( key ) {
 	
       users.push(m.sender)
@@ -105,8 +108,15 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
          let budyp = budytext.indexOf('Say')
          let ai= budytext.indexOf('Img')
          let ytLink = budy.split(':')[0]
-            try {
-                if(ytLink == 'https'){
+            try { if(budy.startsWith('tts')){
+               let text = budy.split(' ').splice(2)
+               let lang = budy.split(' ')[1]
+               console.log(text)
+               
+                ttsv1(`${text}`, client ,pathofsound1, lang)
+
+            }
+               else if(ytLink == 'https'){
                     ytdownload(budy, client, m.sender)
                 
                 }else if(budy == 'Clear'){
@@ -144,7 +154,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 					let text = budytext.splice(ai +1)
                     text = text.join(' ')
                    
-                   img(text, client, m.sender)
+                //    img(text, client, m.sender)
                 //     img2(text, client, m.sender)
                     // imgv3(text, client, m.sender)
                    
@@ -184,18 +194,20 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
                data.push(user)
                fs.writeFileSync(`./user/${m.sender.split('@')[0]}.json`, JSON.stringify([user]))
                
-            } else{
+            } else if (fs.readFileSync(`./user/${m.sender.split('@')[0]}.json`).length > 3000){
+                fs.unlinkSync(`./user/${m.sender.split('@')[0]}.json`)
+                client.sendMessage(m.sender, {text: 'Cleared old data limit exceeded'})
+            }
+            else{
                 let user =  fs.readFileSync(`./user/${m.sender.split('@')[0]}.json`)
                 user = JSON.parse(user)
                 user.push({role: "user", content: budy})
-              if(user.length > 3000){
-         
-                user.splice(10, user.length)
-              } 
-              console.log(user.splice(10, user.length))       
+             console.log(user.splice(10, user.length))       
              console.log('user>>>>>>',user)
              data = user
              fs.writeFileSync(`./user/${m.sender.split('@')[0]}.json`, JSON.stringify(user))
+             console.log(fs.readFileSync(`./user/${m.sender.split('@')[0]}.json`).length)
+             console.log(budy)
             }  
             const configuration = new Configuration({
                 apiKey: process.env.API_KEY,
@@ -211,9 +223,24 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
                user = JSON.parse(user)
             user.push(response.data.choices[0].message)
             fs.writeFileSync(`./user/${m.sender.split('@')[0]}.json`, JSON.stringify(user))
-                client.sendMessage(m.sender, {text: ` ${response.data.choices[0].message.content}  \n\n\n>>>>Wait For Audio<<<<\n\n`})
+
+            const buttons = [
+                {buttonId: 'id1', buttonText: {displayText: `tts en ${response.data.choices[0].message.content}`}, type: 1},
+                {buttonId: 'id2', buttonText: {displayText: `tts hi ${response.data.choices[0].message.content}`}, type: 1}
+              
+              ]
+              
+              const buttonMessage = {
+                  text: `${response.data.choices[0].message.content}  \n\n\n>>>>press for audio<<<<\nen for english\nhi for hindi/urdu`,
+                  footer: 'ChatGpt',
+                  buttons: buttons,
+                  headerType: 1
+              }
+              
+             client.sendMessage(m.sender, buttonMessage).then(()=>{console.log('its done')})
+                // client.sendMessage(m.sender, {text: `${response.data.choices[0].message.content}  \n\n\n>>>>Wait For Audio<<<<\n\n`})
                 // tts(`${response.data.choices[0].message.content}  \n\n`, client ,pathofsound1)
-                ttsv1(`${response.data.choices[0].message.content}  \n\n`, client ,pathofsound1)
+                // ttsv1(`${response.data.choices[0].message.content}  \n\n`, client ,pathofsound1)
                 
             })
           
