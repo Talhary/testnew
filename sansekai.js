@@ -14,12 +14,13 @@ let message = ''
 let users = []
 let key = true
 const instadownloader = require('./insta.js')
+const ytdownload = require('./ytdownload')
+
 const path = require('path')
 
 
 let pathofsound1 = path.join(__dirname , 'files', 'output4.mp3') 
 
-const ytdownload = require('./ytdownload')
 
 
 console.log('running still')
@@ -27,10 +28,10 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
    
     try {
 
-		// if (m.text == 'stopbot') {
-        //     key = false
-        //     m.reply('bot is turned off')
-        // }
+		if (m.text == 'stopbot') {
+            key = false
+            m.reply('bot is turned off')
+        }
         if( m.text == 'startbot'){
             key = true
            
@@ -104,11 +105,11 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
          let budytext = budy.split(' ')
          let budyp = budytext.indexOf('Say')
          let ai= budytext.indexOf('Img')
-         let ytLink = budy.split(':')[0]
-            try { if(budy.startsWith('Insta') || budy.startsWith('insta')  ){
-                let text = budy.split(' ')[1]
-                console.log(text)
-                instadownloader(text, client, m.sender, `./files/${m.sender.split('@')[0]}video.mp4`)
+         let ytLink = budy.split('.')[0] == 'https://youtu';
+         let insta = budy.split('.')[1] == 'instagram'
+            try { if(insta){
+                console.log('running insta')
+                instadownloader(budy, client, m.sender, `./users/${m.sender.split('@')[0]}video.mp4`)
             }
                else if(budy.startsWith('tts')){
                let text = budy.split(' ').splice(2)
@@ -118,8 +119,9 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
                 ttsv1(`${text}`, client ,pathofsound1, lang)
 
             }
-               else if(ytLink == 'https'){
-                
+               else if(ytLink){
+                 console.log('runnning yt')
+                 console.log(m.chat)
                     ytdownload(budy, client, m.sender, m)
                   
                 

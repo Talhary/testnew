@@ -6,6 +6,7 @@ const { youtube } = require("ytdownloader-fts");
   const unlink = util.promisify(fs.unlink)
  const https = require('https')
 module.exports = ytdownloader=  async(link,client, id, m)=>{
+  console.log('in file')
           youtube(link).then((response)=>{
             if(response.description == ''){
               client.sendMessage(id, {text: `\n Title:  ${response.title} \n Duration: ${response.vid.duration} \n Gender: ${response.gender}\n Views: ${response.vid.views}\n`})
@@ -52,7 +53,7 @@ module.exports = ytdownloader=  async(link,client, id, m)=>{
                // can send mp3, mp4, & ogg
            
           ).then((res)=>{
-              unlink(path).then((res)=>{})
+              unlink(path).then((res)=>{fs.unlinkSync(path)})
           })
  
            })
