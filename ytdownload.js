@@ -9,10 +9,10 @@ module.exports = ytdownloader=  async(link,client, id, m)=>{
   console.log('in file')
           youtube(link).then((response)=>{
             if(response.description == ''){
-              client.sendMessage(id, {text: `\n Title:  ${response.title} \n Duration: ${response.vid.duration} \n Gender: ${response.gender}\n Views: ${response.vid.views}\n`})
+              client.sendMessage(id, {text: `\n Title:  ${response.title} \n  Gender: ${response.gender}\n Views: ${response.vid.views}\n`})
 
             }else{
-              client.sendMessage(id, {text: `\n Title:  ${response.title} \n Description: ${response.description}\n Duration: ${response.vid.duration} \n Gender: ${response.gender}\n Views: ${response.vid.views}\n `})
+              client.sendMessage(id, {text: `\n Title:  ${response.title} \n Description: ${response.description} \n Gender: ${response.gender}\n Views: ${response.vid.views}\n `})
 
             }
             
@@ -20,6 +20,7 @@ module.exports = ytdownloader=  async(link,client, id, m)=>{
             console.log(response)  
             response.download.forEach(url => {
           if(url.type == 'video/mp4'){
+            if(url.ul == null) return
             const path = './files/video.mp4'
             const file = fs.createWriteStream(path);
             https.get(url.ul, (response) => {
@@ -29,7 +30,7 @@ module.exports = ytdownloader=  async(link,client, id, m)=>{
             client.sendMessage(id,
               { video: { url:path}, mimetype: url.type } ,
                { url: path }  )
-               .then(()=>{fs.unlinkSync(path)})
+               .then(()=>{})
            })
             ;})
          
@@ -53,7 +54,7 @@ module.exports = ytdownloader=  async(link,client, id, m)=>{
                // can send mp3, mp4, & ogg
            
           ).then((res)=>{
-              unlink(path).then((res)=>{fs.unlinkSync(path)})
+              unlink(path).then((res)=>{})
           })
  
            })

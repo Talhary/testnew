@@ -96,7 +96,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
           
     
     if ( key ) {
-	
+	console.log('running main')
       users.push(m.sender)
 
       
@@ -108,6 +108,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
          let ytLink = budy.split('.')[0] == 'https://youtu';
          let insta = budy.split('.')[1] == 'instagram'
             try { if(insta){
+
                 console.log('running insta')
                 instadownloader(budy, client, m.sender, `./users/${m.sender.split('@')[0]}video.mp4`)
             }
