@@ -54,7 +54,7 @@ module.exports = ytdownloader=  async(link,client, id, m)=>{
                // can send mp3, mp4, & ogg
            
           ).then((res)=>{
-              unlink(path).then((res)=>{})
+              
           })
  
            })
