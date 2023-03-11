@@ -4,24 +4,21 @@ const fs = require('fs')
 const util = require('util')
 const chalk = require('chalk')
 const { Configuration, OpenAIApi } = require("openai")
-let setting = require('./key.json')
-const { indexOf } = require('lodash')
-const event = require('events')
-const gtts = require('better-node-gtts').default;
-const ttspush = new event()
 
-let unlink = util.promisify(fs.unlinkSync)
+
+
+
 const ttsv1 = require('./ttsv1.js')
 require('dotenv').config();
 let message = ''
 let users = []
 let key = true
-
+const instadownloader = require('./insta.js')
 const path = require('path')
 
-let senderJson = []
+
 let pathofsound1 = path.join(__dirname , 'files', 'output4.mp3') 
-let tts = require('./tts.js')
+
 const ytdownload = require('./ytdownload')
 
 
@@ -108,7 +105,12 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
          let budyp = budytext.indexOf('Say')
          let ai= budytext.indexOf('Img')
          let ytLink = budy.split(':')[0]
-            try { if(budy.startsWith('tts')){
+            try { if(budy.startsWith('Insta') || budy.startsWith('insta')  ){
+                let text = budy.split(' ')[1]
+                console.log(text)
+                instadownloader(text, client, m.sender, `./files/${m.sender.split('@')[0]}video.mp4`)
+            }
+               else if(budy.startsWith('tts')){
                let text = budy.split(' ').splice(2)
                let lang = budy.split(' ')[1]
                console.log(text)
@@ -117,7 +119,9 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 
             }
                else if(ytLink == 'https'){
-                    ytdownload(budy, client, m.sender)
+                
+                    ytdownload(budy, client, m.sender, m)
+                  
                 
                 }else if(budy == 'Clear'){
                        fs.unlinkSync(`./user/${m.sender.split('@')[0]}.json`)
